@@ -16,6 +16,11 @@ import path from 'path';
 import * as borsh from 'borsh';
 
 import {getPayer, getRpcUrl, createKeypairFromFile} from './utils';
+import {
+  createByeInstructionData,
+  createHelloInstructionData,
+  createHelloInstructionDataWithAmount,
+} from './instruction';
 
 /**
  * Connection to the network
@@ -46,7 +51,7 @@ const PROGRAM_PATH = path.resolve(__dirname, '../../dist/program');
  * Path to program shared object file which should be deployed on chain.
  * This file is created when running either:
  *   - `npm run build:program-c`
- *   - `npm run build:program-rust`
+ *   - `npm run build:program`
  */
 const PROGRAM_SO_PATH = path.join(PROGRAM_PATH, 'helloworld.so');
 
@@ -200,11 +205,32 @@ export async function checkProgram(): Promise<void> {
  */
 export async function sayHello(): Promise<void> {
   console.log('Saying hello to', greetedPubkey.toBase58());
+
+  const data = createHelloInstructionData();
+
   const instruction = new TransactionInstruction({
     keys: [{pubkey: greetedPubkey, isSigner: false, isWritable: true}],
     programId,
-    data: Buffer.alloc(0), // All instructions are hellos
+    data
   });
+  await sendAndConfirmTransaction(
+    connection,
+    new Transaction().add(instruction),
+    [payer],
+  );
+}
+
+// Data needs to contain a hello or goodbye instruction
+export async function sayGoodBye(): Promise<void> {
+  console.log('Saying goodbye to', greetedPubkey.toBase58());
+  const data = createByeInstructionData();
+
+  const instruction = new TransactionInstruction({
+    keys: [{pubkey: greetedPubkey, isSigner: false, isWritable: true}],
+    programId,
+    data
+  });
+
   await sendAndConfirmTransaction(
     connection,
     new Transaction().add(instruction),

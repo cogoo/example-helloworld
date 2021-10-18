@@ -10,21 +10,23 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/client/main.ts",
+    "start:hello": "ts-node src/client/hello.ts",
+    "start:bye": "ts-node src/client/bye.ts",
     "start-with-test-validator": "start-server-and-test 'solana-test-validator --reset --quiet' http://localhost:8899/health start",
     "lint": "eslint --ext .ts src/client/* && prettier --check \"src/client/**/*.ts\"",
     "lint:fix": "eslint --ext .ts src/client/* --fix && prettier --write \"src/client/**/*.ts\"",
-    "clean": "npm run clean:program-c && npm run clean:program-rust",
-    "build:program-c": "V=1 make -C ./src/program-c helloworld",
-    "clean:program-c": "V=1 make -C ./src/program-c clean",
-    "build:program-rust": "cargo build-bpf --manifest-path=./src/program-rust/Cargo.toml --bpf-out-dir=dist/program",
-    "clean:program-rust": "cargo clean --manifest-path=./src/program-rust/Cargo.toml && rm -rf ./dist",
-    "test:program-rust": "cargo test-bpf --manifest-path=./src/program-rust/Cargo.toml",
+    "clean": "npm run clean:program",
+    "build:program": "cargo build-bpf --manifest-path=./src/program/Cargo.toml --bpf-out-dir=dist/program",
+    "clean:program": "cargo clean --manifest-path=./src/program/Cargo.toml && rm -rf ./dist",
+    "test:program": "cargo test-bpf --manifest-path=./src/program/Cargo.toml",
     "pretty": "prettier --write '{,src/**/}*.ts'"
   },
   "dependencies": {
+    "@solana/buffer-layout": "^3.0.0",
     "@solana/web3.js": "^1.7.0",
     "borsh": "^0.6.0",
+    "buffer": "^6.0.3",
+    "buffer-layout": "^1.2.2",
     "mz": "^2.7.0",
     "yaml": "^1.10.2"
   },
@@ -47,5 +49,8 @@
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "volta": {
+    "node": "14.17.6"
   }
 }

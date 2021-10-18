@@ -69,9 +69,6 @@ on your OS, they may already be installed:
 - Install Solana v1.7.11 or later from
   https://docs.solana.com/cli/install-solana-cli-tools
 
-If this is your first time using Rust, these [Installation
-Notes](README-installation-notes.md) might be helpful.
-
 ### Configure CLI
 
 > If you're on Windows, it is recommended to use [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run these commands
@@ -117,7 +114,7 @@ There is both a Rust and C version of the on-chain program, whichever is built
 last will be the one used when running the example.
 
 ```bash
-npm run build:program-rust
+npm run build:program
 ```
 
 ```bash
@@ -233,7 +230,7 @@ been greeted by calling
 
 ## Learn about the on-chain program
 
-The [on-chain helloworld program](/src/program-rust/Cargo.toml) is a Rust program
+The [on-chain helloworld program](/src/program/Cargo.toml) is a Rust program
 compiled to [Berkley Packet Format
 (BPF)](https://en.wikipedia.org/wiki/Berkeley_Packet_Filter) and stored as an
 [Executable and Linkable Format (ELF) shared

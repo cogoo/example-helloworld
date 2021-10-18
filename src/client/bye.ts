@@ -7,11 +7,11 @@ import {
   establishPayer,
   checkProgram,
   sayHello,
-  reportGreetings,
-} from './hello_world';
+  reportGreetings, sayGoodBye,
+} from './lib';
 
 async function main() {
-  console.log("Let's say hello to a Solana account...");
+  console.log("Let's say goodbye to a Solana account...");
 
   // Establish connection to the cluster
   await establishConnection();
@@ -23,7 +23,7 @@ async function main() {
   await checkProgram();
 
   // Say hello to an account
-  await sayHello();
+  await sayGoodBye();
 
   // Find out how many times that account has been greeted
   await reportGreetings();
