@@ -1,9 +1,7 @@
 use crate::instruction::HelloInstruction;
 use crate::state::GreetingAccount;
-use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
-    entrypoint,
     entrypoint::ProgramResult,
     msg,
     program_error::ProgramError,
@@ -31,8 +29,7 @@ pub fn process(
         return Err(ProgramError::IncorrectProgramId);
     }
 
-    let mut greeting_account: GreetingAccount =
-        GreetingAccount::try_from_slice(&account.data.borrow())?;
+    let mut greeting_account = GreetingAccount::unpack(&account.data.borrow())?;
 
     match instruction {
         HelloInstruction::SayHello => {
@@ -47,7 +44,7 @@ pub fn process(
     }
 
     let mut data = &mut account.data.borrow_mut()[..];
-    greeting_account.serialize(&mut data)?;
+    GreetingAccount::pack(&greeting_account, &mut data)?;
 
     msg!("Greeted {} time(s)!", greeting_account.counter);
 
@@ -57,9 +54,8 @@ pub fn process(
 // Sanity tests
 #[cfg(test)]
 mod test {
-    use std::mem;
-
     use solana_program::clock::Epoch;
+    use std::mem;
 
     use super::*;
 
@@ -84,7 +80,7 @@ mod test {
         let accounts = vec![account];
 
         assert_eq!(
-            GreetingAccount::try_from_slice(&accounts[0].data.borrow())
+            GreetingAccount::unpack(&accounts[0].data.borrow())
                 .unwrap()
                 .counter,
             0
@@ -92,7 +88,7 @@ mod test {
 
         process(&program_id, &accounts, &instruction_data).unwrap();
         assert_eq!(
-            GreetingAccount::try_from_slice(&accounts[0].data.borrow())
+            GreetingAccount::unpack(&accounts[0].data.borrow())
                 .unwrap()
                 .counter,
             1
@@ -100,7 +96,7 @@ mod test {
 
         process(&program_id, &accounts, &instruction_data).unwrap();
         assert_eq!(
-            GreetingAccount::try_from_slice(&accounts[0].data.borrow())
+            GreetingAccount::unpack(&accounts[0].data.borrow())
                 .unwrap()
                 .counter,
             2
@@ -129,7 +125,7 @@ mod test {
         let accounts = vec![account];
 
         assert_eq!(
-            GreetingAccount::try_from_slice(&accounts[0].data.borrow())
+            GreetingAccount::unpack(&accounts[0].data.borrow())
                 .unwrap()
                 .counter,
             0
@@ -139,7 +135,7 @@ mod test {
 
         process(&program_id, &accounts, &bye_instruction_data).unwrap();
         assert_eq!(
-            GreetingAccount::try_from_slice(&accounts[0].data.borrow())
+            GreetingAccount::unpack(&accounts[0].data.borrow())
                 .unwrap()
                 .counter,
             0
